@@ -4,6 +4,9 @@ using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using WebApiProducto.Filtros;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace WebApiProducto
 {
@@ -25,7 +28,9 @@ namespace WebApiProducto
             }).AddJsonOptions(x =>
             x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-
+            services.AddDbContext<ApplicationDbContext>(options => 
+            options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+            
             services.AddResponseCaching();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -69,6 +74,10 @@ namespace WebApiProducto
             });
 
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
