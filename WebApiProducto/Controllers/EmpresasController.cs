@@ -8,31 +8,37 @@ using AutoMapper;
 using WebApiProducto.DTOs;
 using WebApiProducto.Filtros;
 using WebApiProducto.Entidades;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace WebApiProducto.Controllers
 {
     [ApiController]
     [Route("api/empresas")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy ="EsAdmin")]
     public class EmpresasController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
         
         private readonly IMapper mapper;
+        private readonly IConfiguration configuracion;
 
-        public EmpresasController(ApplicationDbContext dbContext, IMapper mapper)
+        public EmpresasController(ApplicationDbContext dbContext, IMapper mapper, IConfiguration configuracion)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.configuracion = configuracion;
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<EmpresaDTO>>>Get()
         {
             var empresas = await dbContext.Empresas.ToListAsync();
             return mapper.Map<List<EmpresaDTO>>(empresas);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = "obtenerempresa")]
         public async Task<ActionResult<EmpresaDTO>>Get(int id)
         {
             var empresas = await dbContext.Empresas.Include(empresaDB => empresaDB.EmpresasProductos).ThenInclude(empresaProductosDB => empresaProductosDB.Productos).FirstOrDefaultAsync(empresaDB => empresaDB.Id == id);

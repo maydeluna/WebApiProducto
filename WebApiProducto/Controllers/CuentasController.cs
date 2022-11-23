@@ -63,21 +63,21 @@ namespace WebApiProducto.Controllers
 
         }
 
-        //[HttpGet("RenovarToken")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        //public async Task<ActionResult<RespuestaAuthenticacion>> Renovar()
-        //{
-        //var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
-        //var email = emailClaim.Value;
+        [HttpGet("RenovarToken")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<RespuestaAuthenticacion>> Renovar()
+        {
+        var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
+        var email = emailClaim.Value;
 
-        // var credenciales = new CredencialesUsuario()
-        //  {
-        //Email = email
-        //};
+         var credenciales = new CredencialesUsuario()
+          {
+            Email = email
+          };
 
-        //  return await ConstruirToken(credenciales);
+          return await ConstruirToken(credenciales);
 
-        //}
+        }
 
         private async Task<RespuestaAuthenticacion> ConstruirToken(CredencialesUsuario credencialesUsuario)
         {
@@ -108,25 +108,25 @@ namespace WebApiProducto.Controllers
             };
         }
 
-        //[HttpPost("HacerAdmin")]
-        //public async Task<ActionResult> HacerAdmin(EditarAdminDTO editarAdminDTO)
-        //{
-        // var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
+        [HttpPost("HacerAdmin")]
+        public async Task<ActionResult> HacerAdmin(EditarAdminDTO editarAdminDTO)
+        {
+         var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
 
-        // await userManager.AddClaimAsync(usuario, new Claim("EsAdmin", "1"));
+         await userManager.AddClaimAsync(usuario, new Claim("EsAdmin", "1"));
 
-        //    return NoContent();
-        //}
+            return NoContent();
+        }
 
-        //[HttpPost("RemoverAdmin")]
-        //public async Task<ActionResult> RemoverAdmin(EditarAdminDTO editarAdminDTO)
-        // {
-        // var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
+        [HttpPost("RemoverAdmin")]
+        public async Task<ActionResult> RemoverAdmin(EditarAdminDTO editarAdminDTO)
+         {
+         var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
 
-        // await userManager.RemoveClaimAsync(usuario, new Claim("EsAdmin", "1"));
+         await userManager.RemoveClaimAsync(usuario, new Claim("EsAdmin", "1"));
 
-        //   return NoContent();
-        //}
+           return NoContent();
+        }
 
 
 
